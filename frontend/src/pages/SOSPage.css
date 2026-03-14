@@ -1,0 +1,180 @@
+.sos-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sos-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2rem;
+  padding: 1rem 1.5rem 4rem;
+  max-width: 560px;
+  width: 100%;
+}
+
+.sos-warning-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(244,63,94,0.12);
+  border: 1px solid rgba(244,63,94,0.3);
+  border-radius: 50px;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f43f5e;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sos-title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.sos-sub { color: var(--text-secondary); font-size: 1rem; margin-top: -1.2rem; }
+
+/* SOS Button */
+.sos-btn-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
+
+.sos-countdown {
+  position: absolute;
+  font-size: 3rem;
+  font-weight: 900;
+  color: #fff;
+  z-index: 2;
+  text-shadow: 0 0 30px rgba(244,63,94,0.8);
+}
+
+.sos-btn {
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f43f5e, #e91e8c, #c2185b);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow:
+    0 0 0 12px rgba(244,63,94,0.15),
+    0 0 0 24px rgba(244,63,94,0.08),
+    0 8px 40px rgba(244,63,94,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  animation: sos-pulse 2.5s ease-in-out infinite;
+  position: relative;
+}
+@keyframes sos-pulse {
+  0%,100% { box-shadow: 0 0 0 12px rgba(244,63,94,0.15), 0 0 0 24px rgba(244,63,94,0.08), 0 8px 40px rgba(244,63,94,0.5); }
+  50% { box-shadow: 0 0 0 20px rgba(244,63,94,0.12), 0 0 0 36px rgba(244,63,94,0.06), 0 8px 50px rgba(244,63,94,0.6); }
+}
+.sos-btn:hover { transform: scale(1.05); }
+.sos-btn:active { transform: scale(0.97); }
+.sos-btn.counting {
+  animation: none;
+  background: linear-gradient(145deg, #ff1744, #d50000);
+}
+
+.sos-btn-label { font-size: 2.5rem; font-weight: 900; color: #fff; letter-spacing: 0.05em; }
+.sos-btn-sub { font-size: 0.72rem; color: rgba(255,255,255,0.75); font-weight: 600; }
+
+/* Active SOS state */
+.sos-active {
+  background: rgba(244,63,94,0.08);
+}
+.sos-active-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  gap: 1.2rem;
+  max-width: 500px;
+  margin: auto;
+  position: relative;
+}
+.sos-pulse-ring {
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 3px solid rgba(244,63,94,0.4);
+  animation: expand-ring 1.5s linear infinite;
+  top: 2rem; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+@keyframes expand-ring {
+  0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+  100% { transform: translateX(-50%) scale(3); opacity: 0; }
+}
+.sos-active-icon { font-size: 4rem; }
+.sos-active-banner h1 { font-size: 2.5rem; font-weight: 900; color: #f43f5e; }
+.sos-active-banner p { color: var(--text-secondary); }
+
+.sos-actions-taken {
+  display: flex; flex-direction: column; gap: 0.5rem; width: 100%;
+  background: rgba(0,200,100,0.08);
+  border: 1px solid rgba(0,200,100,0.2);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.2rem;
+}
+.sos-action { font-size: 0.88rem; color: #00c864; font-weight: 600; text-align: left; }
+
+.btn-cancel-sos {
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.25);
+  color: var(--text-secondary);
+  border-radius: 50px;
+  padding: 0.7rem 2rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-cancel-sos:hover { border-color: #fff; color: #fff; }
+
+/* Info box */
+.sos-info {
+  padding: 1.5rem;
+  text-align: left;
+  width: 100%;
+}
+.sos-info h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
+.sos-steps { display: flex; flex-direction: column; gap: 0.8rem; }
+.sos-step { display: flex; align-items: flex-start; gap: 0.8rem; font-size: 0.85rem; color: var(--text-secondary); }
+.step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--pink-600); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+}
+
+/* Secondary buttons */
+.sos-secondary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; width: 100%; }
+@media (max-width: 480px) { .sos-secondary { grid-template-columns: 1fr; } }
+
+.sos-sec-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: border-color 0.2s, background 0.2s;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.sos-sec-btn.call:hover { border-color: #3b82f6; background: rgba(59,130,246,0.1); color: #3b82f6; }
+.sos-sec-btn.message:hover { border-color: var(--pink-500); background: rgba(233,30,140,0.1); color: var(--pink-300); }
+.sos-sec-btn.distress:hover { border-color: #ffb400; background: rgba(255,180,0,0.1); color: #ffb400; }
+.sec-icon { font-size: 1.5rem; }
+.sec-num { font-size: 0.9rem; font-weight: 800; color: #fff; }
