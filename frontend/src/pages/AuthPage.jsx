@@ -1,14 +1,24 @@
 import { useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import './AuthPage.css';
 
 export default function AuthPage({ onNavigate }) {
   const [email, setEmail] = useState('');
   const [step, setStep] = useState('options'); // options | verified
 
-  const handleGoogleSuccess = (tokenResponse) => {
+  const handleGoogleSuccess = async (tokenResponse) => {
     console.log('Google Login Success:', tokenResponse);
-    setStep('verified');
+    try {
+      const res = await axios.post('http://localhost:5000/api/users/google-login', {
+        access_token: tokenResponse.access_token
+      });
+      console.log('User saved:', res.data);
+      setStep('verified');
+    } catch (error) {
+      console.error('Failed to save Google user:', error);
+      alert('Failed to authenticate with Google. Please try again.');
+    }
   };
 
   const handleGoogle = useGoogleLogin({
@@ -16,7 +26,23 @@ export default function AuthPage({ onNavigate }) {
     onError: () => console.log('Google Login Failed'),
   });
 
-  const handleEmail = (e) => { e.preventDefault(); if (email) setStep('verified'); };
+  const handleEmail = async (e) => {
+    e.preventDefault();
+    if (email) {
+      try {
+        const res = await axios.post(
+          "http://localhost:5000/api/users/verify-email",
+          { email }
+        );
+        alert("Email stored successfully");
+        console.log(res.data);
+        setStep('verified');
+      } catch (error) {
+        console.error(error);
+        alert("Failed to verify email. Please try again.");
+      }
+    }
+  };
   const handleAadhaar = () => setStep('verified');
 
   if (step === 'verified') {

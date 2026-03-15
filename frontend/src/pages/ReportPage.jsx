@@ -2,15 +2,33 @@ import { useState } from 'react';
 import './ReportPage.css';
 
 export default function ReportPage() {
-  const [form, setForm] = useState({ type:'', location:'', description:'', severity:'medium' });
+  const [form, setForm] = useState({ incidentType:'', location:'', description:'', severity:'medium' });
   const [submitted, setSubmitted] = useState(false);
   const [file, setFile] = useState(null);
 
   const update = (k,v) => setForm(f=>({...f,[k]:v}));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.type && form.location) setSubmitted(true);
+    if (form.incidentType && form.location) {
+      try {
+        const response = await fetch('http://localhost:5000/api/reports', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form),
+        });
+        if (response.ok) {
+          setSubmitted(true);
+        } else {
+          alert('Failed to submit report. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting report:', error);
+        alert('Error submitting report. Please try again.');
+      }
+    }
   };
 
   if (submitted) return (
@@ -44,7 +62,7 @@ export default function ReportPage() {
             {/* Incident Type */}
             <div className="form-group">
               <label>Incident Type <span className="required">*</span></label>
-              <select className="form-select" value={form.type} onChange={e=>update('type',e.target.value)} required>
+              <select className="form-select" value={form.incidentType} onChange={e=>update('incidentType',e.target.value)} required>
                 <option value="">Select incident type...</option>
                 <option value="harassment">😤 Harassment</option>
                 <option value="unsafe">🚧 Unsafe Street/Area</option>
