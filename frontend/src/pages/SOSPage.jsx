@@ -1,9 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './SOSPage.css';
 
 export default function SOSPage() {
   const [activated, setActivated] = useState(false);
   const [countdown, setCountdown] = useState(null);
+  const [locationText, setLocationText] = useState("\nMy live location is being monitored via SafeHer. (Fetching GPS...)");
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      // Fetch once immediately
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocationText(`\nLive Location: https://www.google.com/maps?q=${latitude},${longitude}`);
+        },
+        (error) => {
+          console.warn("Location error:", error.message, "- attempting IP fallback...");
+          // Fallback to IP-based location if GPS is unavailable
+          fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+              if (data.latitude && data.longitude) {
+                setLocationText(`\nApproximate Location: https://www.google.com/maps?q=${data.latitude},${data.longitude}`);
+              } else {
+                setLocationText("\nMy live location is being monitored via SafeHer. (Unable to fetch exact GPS coordinates)");
+              }
+            })
+            .catch(() => {
+              setLocationText("\nMy live location is being monitored via SafeHer. (Unable to fetch exact GPS coordinates)");
+            });
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+      
+      // Watch for continued accuracy
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocationText(`\nLive Location: https://www.google.com/maps?q=${latitude},${longitude}`);
+        },
+        (error) => {
+          console.warn("Location watch error:", error.message);
+        },
+        { enableHighAccuracy: true, maximumAge: 10000 }
+      );
+      return () => navigator.geolocation.clearWatch(watchId);
+    } else {
+      setLocationText("\nMy live location is being monitored via SafeHer. (Location not supported by device)");
+    }
+  }, []);
+
+  const sendWhatsAppAlert = () => {
+    const defaultMessage = "🚨 URGENT SOS EMERGENCY! 🚨\nI am in danger and need immediate help. Please contact me or local authorities.";
+    const message = encodeURIComponent(`${defaultMessage}\n${locationText}`);
+    window.open(`https://wa.me/?text=${message}`, '_blank');
+  };
 
   const triggerSOS = () => {
     let c = 3;
@@ -14,6 +65,7 @@ export default function SOSPage() {
         clearInterval(timer);
         setCountdown(null);
         setActivated(true);
+        sendWhatsAppAlert();
       } else {
         setCountdown(c);
       }
@@ -88,7 +140,7 @@ export default function SOSPage() {
             <span>Women Helpline</span>
             <span className="sec-num">1091</span>
           </button>
-          <button className="sos-sec-btn distress">
+          <button className="sos-sec-btn distress" onClick={sendWhatsAppAlert}>
             <span className="sec-icon">📤</span>
             <span>Send Distress Message</span>
             <span className="sec-num">to contacts</span>
